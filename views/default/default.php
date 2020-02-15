@@ -1,3 +1,19 @@
+<p>
+  <h3>
+    Сортировать по:
+    <? foreach($orders as $key => $order): ?>
+      <a
+        href="?<?= http_build_query(mergeQuery([
+          'orderBy' => $key,
+          'orderDir' => $order['active'] ? $orderDirs[1 - array_search($order['dir'], $orderDirs)] : $order['dir'],
+        ])) ?>"
+        class="btn btn-<?= $order['active'] ? 'primary' : 'secondary' ?> btn-default"
+        role="button"
+        aria-pressed="true"
+      ><?= $order['text'] ?> <i class="mdi mdi-arrow-<?= $order['dir'] == 'ASC' ? 'up' : 'down' ?>-bold" aria-hidden="true"></i></a>
+    <? endforeach; ?>
+  </h3>
+</p>
 <? foreach($notes as $note): ?>
   <div class="card my-2">
   <div class="card-body">
@@ -23,17 +39,17 @@
   <ul class="pagination">
     <? if($pagination['current'] > 1): ?>
       <li class="page-item">
-        <a class="page-link" href="?page=1"><<</a>
+        <a class="page-link" href="?<?= http_build_query(mergeQuery([ 'page' => 1 ])) ?>"><<</a>
       </li>
     <? endif; ?>
     <? foreach($pagination['pages'] as $page): ?>
       <li class="page-item<?= $page == $pagination['current'] ? ' active' : '' ?>">
-        <a class="page-link" href="?page=<?= $page ?>"><?= $page ?></a>
+        <a class="page-link" href="?<?= http_build_query(mergeQuery([ 'page' => $page ])) ?>"><?= $page ?></a>
       </li>
     <? endforeach; ?>
     <? if($pagination['current'] < $pagination['max']): ?>
       <li class="page-item">
-        <a class="page-link" href="?page=<?= $pagination['max'] ?>">>></a>
+        <a class="page-link" href="?<?= http_build_query(mergeQuery([ 'page' => $pagination['max'] ])) ?>">>></a>
       </li>
     <? endif; ?>
   </ul>

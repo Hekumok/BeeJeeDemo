@@ -40,11 +40,19 @@ abstract class Model {
     return static::createModel($row);
   }
 
-  public function findAll(string $condition = '', array $params = [], int $limit = null, int $offset = null) {
+  public function findAll(string $condition = '', array $params = [], array $order = [], int $limit = null, int $offset = null) {
     $queryStr = 'SELECT * FROM `' . static::tableName() . '`';
 
     if(!empty($condition)) {
       $queryStr .= ' WHERE ' . $condition;
+    }
+
+    if(!empty($order)) {
+      $queryStr .= ' ORDER BY ' . $order['by'];
+
+      if(!empty($order['dir'])) {
+        $queryStr .= ' ' . $order['dir'];
+      }
     }
 
     if(!empty($limit)) {
