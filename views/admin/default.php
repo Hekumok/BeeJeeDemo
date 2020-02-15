@@ -12,6 +12,7 @@ $incorrectPassword = $error == 'incorrectPassword';
         name="login"
         id="login"
         value="<?= $_POST['login'] ?>"
+        required
       >
     </div>
     <? if($incorrectLogin): ?>
@@ -30,6 +31,7 @@ $incorrectPassword = $error == 'incorrectPassword';
         class="form-control<?= $incorrectPassword ? ' is-invalid' : '' ?>"
         name="password"
         id="password"
+        required
       >
     </div>
     <? if($incorrectPassword): ?>
