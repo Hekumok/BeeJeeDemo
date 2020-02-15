@@ -13,7 +13,7 @@ abstract class Model {
 
   abstract public static function tableName();
 
-  protected static function create(array $fields) {
+  protected static function createModel(array $fields) {
     $model = new static;
 
     foreach($fields as $field => $value) {
@@ -33,7 +33,7 @@ abstract class Model {
       return null;
     }
 
-    return static::create($row);
+    return static::createModel($row);
   }
 
   public function findAll(string $condition = '', int $limit = null, int $offset = null) {
@@ -45,12 +45,20 @@ abstract class Model {
     $res = [];
 
     while($row = $query->fetch()) {
-      $model = static::create($row);
+      $model = static::createModel($row);
 
       array_push($res, $model);
     }
 
     return $res;
+  }
+
+  public function create(array $fields) {
+    $keys = array_keys($fields);
+    $values = array_values($fields);
+
+    $query = $this->db->prepare('INSERT INTO `' . $this->tableName() . '` (' . implode(',', $keys) . ') VALUES (' . implode(',', array_fill(0, count($fields), '?')) . ')');
+    return $query->execute($values);
   }
 }
 
