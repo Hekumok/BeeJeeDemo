@@ -3,6 +3,19 @@
   <div class="card-body">
     <h5 class="card-title"><?= htmlspecialchars($note->name, ENT_QUOTES) . ' : ' . htmlspecialchars($note->email, ENT_QUOTES) ?></h5>
     <p class="card-text"><?= htmlspecialchars($note->text, ENT_QUOTES) ?></p>
+    <? if($note->completed): ?>
+      <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Выполнена">
+        <i class="mdi mdi-checkbox-marked-circle-outline" aria-hidden="true"></i>
+      </button>
+    <? endif; ?>
+    <? if($note->changed): ?>
+      <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="right" title="Изменена администратором">
+        <i class="mdi mdi-account-edit" aria-hidden="true"></i>
+      </button>
+    <? endif; ?>
+    <? if($this->framework->user): ?>
+      <a href="/note/update?id=<?= $note->id ?>" class="btn btn-primary float-right">Редактировать</a>
+    <? endif; ?>
   </div>
 </div>
 <? endforeach; ?>

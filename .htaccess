@@ -10,6 +10,7 @@ RewriteRule ^(.*)$ /error.html [L]
 RewriteCond %{REQUEST_URI} ^/404$
 RewriteRule ^(.*)$ /404.html [L]
 
+RewriteCond %{REQUEST_URI} !\.(css|ico)$
 RewriteCond %{REQUEST_URI} !=/main.php
 RewriteCond %{REQUEST_URI} !=/404.html
 RewriteCond %{REQUEST_URI} !=/error.html

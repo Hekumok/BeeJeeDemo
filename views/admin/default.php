@@ -2,6 +2,7 @@
 $incorrectLogin = $error == 'incorrectLogin';
 $incorrectPassword = $error == 'incorrectPassword';
 ?>
+<p><a href='/'>< На главную</a></p>
 <form action="/admin/login/" method="POST">
   <div class="form-group">
     <label for="login" class="<?= $incorrectLogin ? 'text-danger' : '' ?>">Логин</label>

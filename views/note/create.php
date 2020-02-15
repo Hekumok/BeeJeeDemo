@@ -1,3 +1,4 @@
+<p><a href='/'>< На главную</a></p>
 <? if($success): ?>
   <p class='text-success'>Задача успешно добавлена.</p>
 <? endif; ?>

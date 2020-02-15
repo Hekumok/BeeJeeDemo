@@ -11,6 +11,10 @@ abstract class Model {
     return new static;
   }
 
+  public static function primaryKey() {
+    return 'id';
+  }
+
   abstract public static function tableName();
 
   protected static function createModel(array $fields) {
@@ -72,6 +76,16 @@ abstract class Model {
 
     $query = $this->db->prepare('INSERT INTO `' . static::tableName() . '` (' . implode(',', $keys) . ') VALUES (' . implode(',', array_fill(0, count($fields), '?')) . ')');
     return $query->execute($values);
+  }
+
+  public function update(array $fields) {
+    $keys = $fields;
+    $values = array_map(function($key) {
+      return $this->$key;
+    }, $fields);
+
+    $query = $this->db->prepare('UPDATE `' . static::tableName() . '` SET ' . implode(',', array_map(function($key) { return $key . ' = ?'; }, $keys)) . ' WHERE ' . $this->primaryKey() . ' = ?');
+    return $query->execute(array_merge($values, [ $this->{$this->primaryKey()} ]));
   }
 
   public function count(string $condition = '', array $params = []) {
