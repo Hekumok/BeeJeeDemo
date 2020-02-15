@@ -4,8 +4,10 @@ session_start();
 
 include_once('error_handler.php');
 include_once('framework/MVCFramework.php');
+include_once('db.php');
 
 $framework = BeeJee\MVCFramework::getInstance();
+$framework->setDB($db);
 $framework->beforeRoute(function($framework) {
   $framework->user = null;
 

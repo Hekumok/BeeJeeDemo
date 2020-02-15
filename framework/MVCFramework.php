@@ -32,20 +32,11 @@ class MVCFramework {
   protected function __clone() {}
 
   protected function __construct() {
-    $this->initDB();
+    $this->db = null;
   }
 
-  protected function initDB() {
-    $dsn = 'mysql:host=localhost;dbname=beejee';
-    $username = 'hekumok';
-    $password = 'Lil1love';
-    $options = [
-      \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-      \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-      \PDO::ATTR_EMULATE_PREPARES   => false,
-    ];
-
-    $this->db = new \PDO($dsn, $username, $password, $options);
+  public function setDB($db) {
+    $this->db = $db;
   }
 
   public function beforeRoute($func) {

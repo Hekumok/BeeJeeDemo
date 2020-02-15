@@ -1,9 +1,6 @@
 <?
 
-include_once('../framework/MVCFramework.php');
-
-$framework = BeeJee\MVCFramework::getInstance();
-$db = $framework->db;
+include_once('../db.php');
 
 $db->query('CREATE TABLE admin (
   id       INT          NOT NULL AUTO_INCREMENT PRIMARY KEY,
