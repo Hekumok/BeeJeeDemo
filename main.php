@@ -8,6 +8,7 @@ include_once('db.php');
 
 $framework = BeeJee\MVCFramework::getInstance();
 $framework->setDB($db);
+
 $framework->beforeRoute(function($framework) {
   $framework->user = null;
 

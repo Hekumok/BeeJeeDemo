@@ -23,9 +23,9 @@ abstract class Model {
     return $model;
   }
 
-  public function find(string $condition, array $params = []) {
+  public function find(string $condition = '', array $params = []) {
     $whereCondition = empty($condition) ? '' : 'WHERE ' . $condition;
-    $query = $this->db->prepare('SELECT * FROM `' . $this->tableName() . '` ' . $whereCondition . ' LIMIT 1');
+    $query = $this->db->prepare('SELECT * FROM `' . static::tableName() . '` ' . $whereCondition . ' LIMIT 1');
     $query->execute($params);
     $row = $query->fetch();
 
@@ -36,15 +36,28 @@ abstract class Model {
     return static::createModel($row);
   }
 
-  public function findAll(string $condition = '', int $limit = null, int $offset = null) {
-    $whereCondition = empty($condition) ? '' : 'WHERE :condition';
-    $limitExpr = empty($limit) ? '' : 'LIMIT :limit';
-    $offsetExpr = empty($offset) ? '' : 'OFFSET :offset';
-    $query = $this->db->prepare('SELECT * from :table ' . $whereCondition . ' ' . $limitExpr . ' ' . $offsetExpr);
-    $query->execute([ 'table' => static::tableName(), 'condition' => $condition, 'limit' => $limit, 'offset' => $offset ]);
+  public function findAll(string $condition = '', array $params = [], int $limit = null, int $offset = null) {
+    $queryStr = 'SELECT * FROM `' . static::tableName() . '`';
+
+    if(!empty($condition)) {
+      $queryStr .= ' WHERE ' . $condition;
+    }
+
+    if(!empty($limit)) {
+      $queryStr .= ' LIMIT :limit';
+      $params['limit'] = $limit;
+    }
+
+    if(!empty($offset)) {
+      $queryStr .= ' OFFSET :offset';
+      $params['offset'] = $offset;
+    }
+
+    $query = $this->db->prepare($queryStr);
+    $query->execute($params);
     $res = [];
 
-    while($row = $query->fetch()) {
+    foreach($query->fetchAll() as $row) {
       $model = static::createModel($row);
 
       array_push($res, $model);
@@ -57,8 +70,16 @@ abstract class Model {
     $keys = array_keys($fields);
     $values = array_values($fields);
 
-    $query = $this->db->prepare('INSERT INTO `' . $this->tableName() . '` (' . implode(',', $keys) . ') VALUES (' . implode(',', array_fill(0, count($fields), '?')) . ')');
+    $query = $this->db->prepare('INSERT INTO `' . static::tableName() . '` (' . implode(',', $keys) . ') VALUES (' . implode(',', array_fill(0, count($fields), '?')) . ')');
     return $query->execute($values);
+  }
+
+  public function count(string $condition = '', array $params = []) {
+    $whereCondition = empty($condition) ? '' : 'WHERE ' . $condition;
+    $query = $this->db->prepare('SELECT COUNT(*) FROM `' . static::tableName() . '` ' . $whereCondition);
+    $query->execute($params);
+
+    return $query->fetchColumn();
   }
 }
 
