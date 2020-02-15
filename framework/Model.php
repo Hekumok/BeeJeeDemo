@@ -7,6 +7,10 @@ abstract class Model {
     $this->db = $framework->db;
   }
 
+  public static function model() {
+    return new static;
+  }
+
   abstract public static function tableName();
 
   protected static function create(array $fields) {
@@ -19,10 +23,10 @@ abstract class Model {
     return $model;
   }
 
-  public function find(string $condition) {
-    $whereCondition = empty($condition) ? '' : 'WHERE :condition';
-    $query = $this->db->prepare('SELECT * from :table ' . $whereCondition . ' LIMIT 1');
-    $query->execute([ 'table' => static::tableName(), 'condition' => $condition ]);
+  public function find(string $condition, array $params = []) {
+    $whereCondition = empty($condition) ? '' : 'WHERE ' . $condition;
+    $query = $this->db->prepare('SELECT * FROM `' . $this->tableName() . '` ' . $whereCondition . ' LIMIT 1');
+    $query->execute($params);
     $row = $query->fetch();
 
     if(!$row) {

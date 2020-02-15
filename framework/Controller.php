@@ -1,21 +1,28 @@
 <?
+use BeeJee\MVCFramework as Framework;
+
 abstract class Controller {
   public $layout = 'default';
 
+  public function __construct() {
+    $framework = Framework::getInstance();
+    $this->framework = $framework;
+  }
+
   public function name() {
-    return rtrim(static::class, 'Controller');
+    return substr(static::class, 0, -strlen('Controller'));
   }
 
   protected function viewPath(string $viewName) {
     $root = $_SERVER['DOCUMENT_ROOT'];
 
-    return $root . '/views/' . $this->name() . '/' . $viewName . '.php';
+    return $root . '/views/' . strtolower($this->name()) . '/' . strtolower($viewName) . '.php';
   }
 
   protected function layoutPath() {
     $root = $_SERVER['DOCUMENT_ROOT'];
 
-    return $root . '/views/layouts/' . $this->layout . '.php';
+    return $root . '/views/layouts/' . strtolower($this->layout) . '.php';
   }
 
   public function action(string $actionName = null, array $params = []) {
@@ -43,7 +50,7 @@ abstract class Controller {
   }
 
   protected function renderPage(string $content) {
-    include($viewPath);
+    include($this->layoutPath());
   }
 }
 

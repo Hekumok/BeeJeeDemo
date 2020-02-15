@@ -27,6 +27,7 @@ spl_autoload_register(function($className) {
 
 class MVCFramework {
   private static $instance = null;
+  protected static $beforeRouteHandler = null;
 
   protected function __clone() {}
 
@@ -47,22 +48,42 @@ class MVCFramework {
     $this->db = new \PDO($dsn, $username, $password, $options);
   }
 
-  public function run() {
+  public function beforeRoute($func) {
+    if(is_callable($func)) {
+      $this->beforeRouteHandler = $func;
+    }
+  }
+
+  protected function getRouterData() {
     $uri = $_SERVER['REQUEST_URI'];
     $urlData = parse_url($uri);
     $path = trim($urlData['path'], '/');
     $pathParts = explode('/', $path);
     parse_str($urlData['query'], $params);
 
-    $controllerName = ucfirst(strtolower($pathParts[0])) ?: 'Default';
+    return [
+      'controllerName' => $pathParts[0],
+      'actionName' => $pathParts[1],
+      'params' => $params,
+    ];
+  }
+
+  public function run() {
+    $data = $this->getRouterData();
+
+    $controllerName = ucfirst(strtolower($data['controllerName'])) ?: 'Default';
     $controllerClassName = $controllerName . 'Controller';
 
     if(!file_exists(pathToController($controllerClassName))) {
       return header('Location: /404');
     }
 
+    if(is_callable($this->beforeRouteHandler)) {
+      call_user_func($this->beforeRouteHandler, $this);
+    }
+
     $controller = new $controllerClassName;
-    $controller->action($pathParts[1], $params);
+    $controller->action($data['actionName'], $data['params']);
   }
 
   public static function getInstance() {
