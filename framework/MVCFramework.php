@@ -27,12 +27,12 @@ spl_autoload_register(function($className) {
 
 class MVCFramework {
   private static $instance = null;
-  protected static $beforeRouteHandler = null;
 
   protected function __clone() {}
 
   protected function __construct() {
     $this->db = null;
+    $this->beforeRouteHandler = null;
   }
 
   public function setDB($db) {
